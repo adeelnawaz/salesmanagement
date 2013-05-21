@@ -1,0 +1,151 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <?php echo $this->headTitle(); ?>
+        <link rel="stylesheet" href="<?php echo $this->getResource('css/screen.css'); ?>" type="text/css" media="screen" title="default" />
+
+        <script src="<?php echo $this->getResource('js/jquery-1.9.1.min.js'); ?>" type="text/javascript"></script>
+
+        <!-- jquery ui -->
+        <link rel="stylesheet" href="<?php echo $this->getResource('css/smoothness/jquery-ui.css'); ?>" type="text/css" media="screen" title="default" />
+        <script src="<?php echo $this->getResource('js/jquery-ui-1.10.2.custom.js'); ?>" type="text/javascript"></script>
+    </head>
+    <body>
+        <div id="alert-messages"><?php echo $this->alertMessages(); ?></div>
+        <div id="page-top-outer">
+            <div id="page-top">
+                <div id="logo">
+                    <a href="<?php echo $this->url(array(), NULL, TRUE); ?>"><img src="/images/shared/logo.png" width="156" height="40" alt="" /></a>
+                </div>
+                <div class="clear"></div>
+            </div>
+        </div>
+        <div class="clear">&nbsp;</div>
+        <div class="nav-outer-repeat"> 
+            <div class="nav-outer"> 
+                <div id="nav-right">
+                    <div class="nav-divider">&nbsp;</div>
+                    <div class="showhide-account">
+                        <img src="/images/shared/nav/nav_myaccount.gif" width="93" height="14" alt="" />
+                        <div class="account-content">
+                            <div class="account-drop-inner">
+                                <a href="javascript:void(0)" id="acc-settings"><?php echo $this->translate('Settings'); ?></a>
+                                <div class="clear">&nbsp;</div>
+                                <div class="acc-line">&nbsp;</div>
+                                <a href="javascript:void(0)" id="acc-stats"><?php echo $this->translate('Statistics'); ?></a> 
+                            </div>
+                        </div>
+                    </div>
+                    <div class="nav-divider">&nbsp;</div>
+                    <a href="<?php echo $this->url(array('action' => 'logout'), NULL, TRUE); ?>" id="logout"><img src="/images/shared/nav/nav_logout.gif" width="64" height="14" alt="" /></a>
+                    <div class="clear">&nbsp;</div>
+                </div>
+
+                <div class="nav">
+                    <div class="table">
+                        <ul class="select <?php echo ($this->selectedTab == 'customers' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'customers'), NULL, TRUE); ?>"><b><?php echo $this->translate('Customers'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class="<?php echo ($this->selectedSubTab == 'list_customers' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'customers'), NULL, TRUE); ?>"><?php echo $this->translate('List'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_customer' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'customers', 'action' => 'add'), NULL, TRUE); ?>"><?php echo $this->translate('Add new'); ?></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="nav-divider">&nbsp;</div>
+                        <ul class="select <?php echo ($this->selectedTab == 'sales' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'sales'), NULL, TRUE); ?>"><b><?php echo $this->translate('Sales'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class="<?php echo ($this->selectedSubTab == 'list_sales' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'sales', 'action' => 'index'), NULL, ($this->customerSales == TRUE ? FALSE : TRUE)); ?>"><?php echo $this->translate('List'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_sale' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'sales', 'action' => 'add'), NULL, ($this->customerSales == TRUE ? FALSE : TRUE)); ?>"><?php echo $this->translate('Add new'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_sale_payment' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'sales', 'action' => 'addpayment'), NULL, TRUE); ?>"><?php echo $this->translate('Add payment'); ?></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="nav-divider">&nbsp;</div>
+                        <ul class="select <?php echo ($this->selectedTab == 'suppliers' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'suppliers'), NULL, TRUE); ?>"><b><?php echo $this->translate('Suppliers'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class="<?php echo ($this->selectedSubTab == 'list_suppliers' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'suppliers', 'action' => 'index'), NULL, TRUE); ?>"><?php echo $this->translate('List'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_supplier' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'suppliers', 'action' => 'add'), NULL, TRUE); ?>"><?php echo $this->translate('Add new'); ?></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <ul class="select <?php echo ($this->selectedTab == 'purchases' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'purchases'), NULL, TRUE); ?>"><b><?php echo $this->translate('Purchases'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class="<?php echo ($this->selectedSubTab == 'list_purchases' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'purchases', 'action' => 'index'), NULL, TRUE); ?>"><?php echo $this->translate('List'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_purchase' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'purchases', 'action' => 'add'), NULL, ($this->supplierPurchases == TRUE ? FALSE : TRUE)); ?>"><?php echo $this->translate('Add new'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_purchase_payment' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'purchases', 'action' => 'addpayment'), NULL, TRUE); ?>"><?php echo $this->translate('Add payment'); ?></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="nav-divider">&nbsp;</div>
+                        <ul class="select <?php echo ($this->selectedTab == 'products' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'products'), NULL, TRUE); ?>"><b><?php echo $this->translate('Product stock'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class=""><a href="javascript:void(0)"></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="nav-divider">&nbsp;</div>
+                        <ul class="select <?php echo ($this->selectedTab == 'companies' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'companies'), NULL, TRUE); ?>"><b><?php echo $this->translate('Companies'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class="<?php echo ($this->selectedSubTab == 'list_companies' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'companies'), NULL, TRUE); ?>"><?php echo $this->translate('List'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_company' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'companies', 'action' => 'add'), NULL, TRUE); ?>"><?php echo $this->translate('Add new'); ?></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="nav-divider">&nbsp;</div>
+                        <ul class="select <?php echo ($this->selectedTab == 'productmodels' ? 'current' : ''); ?>">
+                            <li>
+                                <a href="<?php echo $this->url(array('module' => 'productmodels'), NULL, TRUE); ?>"><b><?php echo $this->translate('Product models'); ?></b></a>
+                                <div class="select_sub">
+                                    <ul class="sub">
+                                        <li class="<?php echo ($this->selectedSubTab == 'list_productmodels' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'productmodels', 'action' => 'index'), NULL, ($this->companyProductmodels == TRUE ? FALSE : TRUE)); ?>"><?php echo $this->translate('List'); ?></a></li>
+                                        <li class="<?php echo ($this->selectedSubTab == 'add_productmodel' ? 'sub_show' : ''); ?>"><a href="<?php echo $this->url(array('module' => 'productmodels', 'action' => 'add'), NULL, ($this->companyProductmodels == TRUE ? FALSE : TRUE)); ?>"><?php echo $this->translate('Add new'); ?></a></li>
+                                    </ul>
+                                </div>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </div>
+            <div class="clear"></div>
+        </div>
+        <div class="clear"></div>
+        <div id="content-outer">
+            <div id="content">
+                <?php echo $this->layout()->content; ?>
+            </div>
+            <div class="clear">&nbsp;</div>
+        </div>
+        <div class="clear">&nbsp;</div>
+        <div id="footer">
+            <div id="footer-left">
+                Admin Skin &copy; Copyright Internet Dreams Ltd. <span id="spanYear"></span> <a href="">www.netdreams.co.uk</a>. All rights reserved.</div>
+            <div class="clear">&nbsp;</div>
+        </div>
+    </body>
+</html>

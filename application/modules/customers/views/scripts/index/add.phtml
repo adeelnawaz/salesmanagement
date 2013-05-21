@@ -1,0 +1,212 @@
+<div id="page-heading"><h1><?php echo $this->placeholder('heading'); ?></h1></div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                        <td>
+                            <form method="post" id="customer-form">
+                                <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('First name'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->first_name; ?></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Last name'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->last_name; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Phone number'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->phone_number; ?></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Address'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->address; ?></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Other'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->other; ?></td>
+                                        <td></td>
+                                    </tr>
+                                    <?php if ($this->action() == 'edit') { ?>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Status'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->status; ?></td>
+                                            <td></td>
+                                        </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <td valign="top">
+                                            <input type="submit" value="<?php echo $this->translate('Submit'); ?>" class="form-submit" />
+                                            <input type="reset" value="<?php echo $this->translate('Back'); ?>" class="form-reset" onClick="window.back()" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </td>
+                        <?php if ($this->action() == 'edit') { ?>
+                            <td>
+                                <div id="related-activities">
+                                    <div id="related-act-top">
+                                        <img src="/images/forms/header_related_act.gif" width="271" height="43" alt="" />
+                                    </div>
+                                    <div id="related-act-bottom">
+                                        <div id="related-act-inner">
+                                            <div class="left"><img src="/images/forms/icon_edit.gif" width="21" height="21" alt="" /></div>
+                                            <div class="right">
+                                                <h5><?php echo $this->translate('Clear history'); ?></h5>
+                                                <?php echo $this->translate("All data related to this customer's sales will be removed."); ?>
+                                                <ul class="greyarrow">
+                                                    <li><a href="javascript:void(0)" onClick="clearHistory()"><?php echo $this->translate('Click here to clear'); ?></a></li> 
+                                                </ul>
+                                            </div>
+                                            <div class="clear"></div>
+                                            <div class="lines-dotted-short"></div>
+                                            <div class="left"><img src="/images/forms/icon_minus.gif" width="21" height="21" alt="" /></div>
+                                            <div class="right">
+                                                <h5><?php echo $this->translate('Delete customer'); ?></h5>
+                                                <?php echo $this->translate("All personal information related to this customer will be removed."); ?>
+                                                <ul class="greyarrow">
+                                                    <li><a href="javascript:void(0)" onClick="deleteCustomer()"><?php echo $this->translate('Click here to remove'); ?></a></li> 
+                                                </ul>
+                                            </div>
+                                            <div class="clear"></div>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                </div>
+                            </td>
+                        <?php } ?>
+                    </tr>
+                    <tr>
+                        <td><img src="/images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<?php if ($this->action() == 'edit') { ?>
+    <div id="customer-clear-history" class="dialog-box display-none">
+        <table>
+            <tr>
+                <td>
+                    <?php echo $this->translate('There are one or more product records associated with the sales records. Do you want to keep them or delete them?'); ?>
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td valign="middle">
+                    <form id="customer-clear-history-form" method="post" action="<?php echo $this->url(array('action' => 'clearhistory')); ?>">
+                        <input type="checkbox" name="delete_products" class="checkbox-size"/>
+                        <label for="delete_products"><?php echo $this->translate('Delete associated product records'); ?></label>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div id="customer-delete" class="dialog-box display-none">
+        <table>
+            <tr>
+                <td>
+                    <?php echo $this->translate('There may be sales records and product records associated with the customers. Do you want to keep them or delete them?'); ?>
+                </td>
+            </tr>
+            <tr><td>&nbsp;</td></tr>
+            <tr>
+                <td valign="middle">
+                    <form id="customer-delete-form" method="post" action="<?php echo $this->url(array('action' => 'delete')); ?>">
+                        <input type="checkbox" name="delete_sales" class="checkbox-size" onClick="toggleProductsCheck()"/>
+                        <label for="delete_products"><?php echo $this->translate('Delete associated sales'); ?></label>
+                        <div class="products-check display-none" style="padding-left: 10px">
+                            <input type="checkbox" name="delete_products" class="checkbox-size"/>
+                            <label for="delete_products"><?php echo $this->translate('Delete associated product records'); ?></label>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <script>
+        function clearHistory(){
+            $('#customer-clear-history').dialog({
+                modal: true,
+                draggable: false,
+                resizable: false,
+                title: "<?php echo $this->translate('Clear history'); ?>",
+                buttons: [
+                    {
+                        text: "<?php echo $this->translate('Ok'); ?>",
+                        click: function() {
+                            //Action
+                            $("#customer-clear-history-form").submit();
+                        }
+                    },
+                    {
+                        text: "<?php echo $this->translate('Cancel'); ?>",
+                        click: function() {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+        }
+                        
+        function deleteCustomer(){
+            $('#customer-delete').dialog({
+                modal: true,
+                draggable: false,
+                resizable: false,
+                title: "<?php echo $this->translate('Delete customer'); ?>",
+                buttons: [
+                    {
+                        text: "<?php echo $this->translate('Ok'); ?>",
+                        click: function() {
+                            //Action
+                            $("#customer-delete-form").submit();
+                        }
+                    },
+                    {
+                        text: "<?php echo $this->translate('Cancel'); ?>",
+                        click: function() {
+                            $(this).dialog("close");
+                        }
+                    }
+                ]
+            });
+        }
+                        
+        function toggleProductsCheck(){
+            if($("#customer-delete input[name=delete_sales]").is(':checked')){
+                $("#customer-delete .products-check").show();
+            }else{
+                $("#customer-delete .products-check input[name=delete_products]").removeAttr('checked');
+                $("#customer-delete .products-check").hide();
+            }
+        }
+    </script>
+    <?php
+}

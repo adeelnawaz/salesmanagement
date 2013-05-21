@@ -1,0 +1,149 @@
+<div id="page-heading">
+    <h1><?php echo $this->placeholder('heading'); ?></h1>
+</div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized">
+            <img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" />
+        </th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <div id="table-content">
+                    <div id="productmodel-search-tool" class="position-relative search-tool">
+                        <?php if ($this->searched == TRUE) { ?>
+                            <a class="icon-delete float-right" onClick="clearProductmodelSearch()"></a>
+                        <?php } ?>
+                        <a class="icon-search float-right <?php echo ($this->searched == TRUE ? 'icon-search-selected' : ''); ?>" onClick="toggleProductmodelSearch()"></a>
+                        <div class="clear"></div>
+                    </div>
+                    <form method="post" id="productmodel-search-form">
+                        <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                            <tr>
+                                <?php if ($this->companyProductmodels != TRUE) { ?>
+                                    <th class="table-header-repeat line-left"><?php $this->sortOrder('company', $this->translate('Company')); ?></th>
+                                <?php } ?>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('model_number', $this->translate('Model number')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('name', $this->translate('Model name')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('price', $this->translate('Current price')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('products_count', $this->translate('Products in sale')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('status', $this->translate('Status')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('created_at', $this->translate('Date of creation')); ?></th>
+                                <th class="table-header-options line-left"><a href="javascript:void(0)"><?php echo $this->translate('Options'); ?></a></th>
+                            </tr>
+                            <tr id="productmodel-search-row" class="search-row <?php echo ($this->searched == TRUE ? '' : 'display-none'); ?>">
+                                <?php if ($this->companyProductmodels != TRUE) { ?>
+                                    <td><div><?php echo $this->filter->company; ?></div></td>
+                                <?php } ?>
+                                <td><div><?php echo $this->filter->model_number; ?></div></td>
+                                <td><div><?php echo $this->filter->name; ?></div></td>
+                                <td><div><?php echo $this->filter->price; ?></div></td>
+                                <td></td>
+                                <td><div><?php echo $this->filter->status; ?></div></td>
+                                <td><div><?php echo $this->filter->created_at_from; ?><?php echo $this->filter->created_at_to; ?></div></td>
+                                <td class="options-width">
+                                    <a href="javascript:void(0)" title="<?php echo $this->translate('Search'); ?>" class="icon-tick" onClick="searchProductmodel()"></a>
+                                </td>
+                            </tr>
+                            <?php if (count($this->paginator)) { ?>
+                                <?php foreach ($this->paginator as $key => $productmodel) { ?>
+                                    <tr <?php echo ($key % 2 == 0 ? 'alternate-row' : ''); ?>>
+                                        <?php if ($this->companyProductmodels != TRUE) { ?>
+                                            <td><a href="<?php echo $this->url(array('module' => 'productmodels', 'id' => $productmodel['company_id'])); ?>"><?php echo $productmodel['company']; ?></a></td>
+                                        <?php } ?>
+                                        <td><?php echo $productmodel['model_number']; ?></td>
+                                        <td><?php echo $productmodel['name']; ?></td>
+                                        <td><?php echo $productmodel['price']; ?></td>
+                                        <td><?php echo $productmodel['products_count']; ?></td>
+                                        <td><?php echo $productmodel['status']; ?></td>
+                                        <td><?php echo $productmodel['created_at']; ?></td>
+                                        <td class="options-width">
+                                            <?php if ($productmodel['company_id'] == -1) {/* company record deleted */ ?>
+                                                <a href="javascript:void(0)" onClick="selectProductmodel(this)" class="bulk-delete icon-tick" productmodelid="<?php echo $productmodel['id'] ?>"></a>    
+                                                <a href="<?php echo $this->url(array('module' => 'productmodels', 'action' => 'delete', 'id' => $productmodel['id'])); ?>" title="<?php echo $this->translate('Delete'); ?>" class="icon-delete"></a>
+                                            <?php } ?>
+                                            <a href="<?php echo $this->url(array('module' => 'productmodels', 'action' => 'edit', 'id' => $productmodel['id'])); ?>" title="<?php echo $this->translate('Edit'); ?>" class="icon-edit"></a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="<?php echo ($this->companyProductmodels == TRUE ? 8 : 9); ?>" class="no-results"><?php echo $this->translate('No results found'); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </form>
+                </div>
+                <h3 class="float-left" style="margin-left:8px"><a href="javascript:void(0)" id="bulk-delete" onClick="bulkDelete()" class="display-none"><?php echo $this->translate('Delete selected'); ?></a></h3>
+                <?php echo $this->paginationControl($this->paginator, 'Sliding', 'paging-table.phtml'); ?>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<script>
+    function toggleProductmodelSearch(){
+        $("#productmodel-search-tool .icon-search").toggleClass('icon-search-selected');
+        $("#productmodel-search-row").toggle();
+    }
+    
+    function searchProductmodel(){
+        var input = $("#productmodel-search-row input,#productmodel-search-row select");
+        var formEmpty = true;
+        $.each(input,function(index,obj){
+            if($(obj).val() != ''){
+                formEmpty = false;
+            }
+        });
+        if(formEmpty == false){
+            $('#productmodel-search-form').submit();
+        }
+    }
+    
+    function clearProductmodelSearch(){
+        window.location.href = '<?php echo $this->url(array('module' => 'productmodels', 'id' => $this->companyId), NULL, TRUE); ?>';
+    }
+    
+    function selectProductmodel(obj){
+        $(obj).toggleClass('icon-tick-selected');
+        if($(".bulk-delete.icon-tick-selected").length > 0){
+            $("#bulk-delete").show();
+        }else{
+            $("#bulk-delete").hide();
+        }
+    }
+    
+    function bulkDelete(){
+        var bulkDel = $(".bulk-delete.icon-tick-selected");
+        if(bulkDel.length > 0){
+            var bulkDelIds = new Array();
+            $.each(bulkDel, function(index, product){
+                bulkDelIds.push($(product).attr('productmodelid'));
+            });
+            
+            bulkDelIds = bulkDelIds.join(',');
+            
+            var href = '<?php echo $this->url(array('module' => 'productmodels', 'action' => 'bulkdelete', 'id' => 'productModelId'), NULL, TRUE); ?>';
+            href = href.replace('productModelId', bulkDelIds);
+            
+            window.location.href = href;
+        }
+    }
+    
+    $(function(){
+        $(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+    });
+</script>

@@ -1,0 +1,114 @@
+<div id="page-heading">
+    <h1><?php echo $this->translate('Customers'); ?></h1>
+</div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized">
+            <img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" />
+        </th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <div id="table-content">
+                    <div id="customer-search-tool" class="position-relative search-tool">
+                        <?php if ($this->searched == TRUE) { ?>
+                            <a class="icon-delete float-right" onClick="clearCustomerSearch()"></a>
+                        <?php } ?>
+                        <a class="icon-search float-right <?php echo ($this->searched == TRUE ? 'icon-search-selected' : ''); ?>" onClick="toggleCustomerSearch()"></a>
+                        <div class="clear"></div>
+                    </div>
+                    <form method="post" id="customer-search-form">
+                        <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                            <tr>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('first_name', $this->translate('First Name')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('last_name', $this->translate('Last Name')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('phone_number', $this->translate('Phone Number')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('address', $this->translate('Address')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('other', $this->translate('Other')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('credit', $this->translate('Credit')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('sales_count', $this->translate('Sales')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('sales_onhold', $this->translate('Sales held')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('payments_onhold', $this->translate('Payments held')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('status', $this->translate('Status')); ?></th>
+                                <th class="table-header-options line-left"><a href="javascript:void(0)"><?php echo $this->translate('Options'); ?></a></th>
+                            </tr>
+                            <tr id="customer-search-row" class="search-row <?php echo ($this->searched == TRUE ? '' : 'display-none'); ?>">
+                                <td colspan="2"><div><?php echo $this->filter->full_name; ?></div></td>
+                                <td><div><?php echo $this->filter->phone_number; ?></div></td>
+                                <td><div><?php echo $this->filter->address; ?></div></td>
+                                <td><div><?php echo $this->filter->other; ?></div></td>
+                                <td colspan="4"></td>
+                                <td><div><?php echo $this->filter->status; ?></div></td>
+                                <td class="options-width">
+                                    <a href="javascript:void(0)" title="<?php echo $this->translate('Search'); ?>" class="icon-tick" onClick="searchCustomer()"></a>
+                                </td>
+                            </tr>
+                            <?php if (count($this->paginator)) { ?>
+                                <?php foreach ($this->paginator as $key => $customer) { ?>
+                                    <tr <?php echo ($key % 2 == 0 ? 'alternate-row' : ''); ?>>
+                                        <td><?php echo $customer['first_name']; ?></td>
+                                        <td><?php echo $customer['last_name']; ?></td>
+                                        <td><?php echo $customer['phone_number']; ?></td>
+                                        <td><?php echo $customer['address']; ?></td>
+                                        <td><?php echo $customer['other']; ?></td>
+                                        <td><?php echo (float) $customer['credit']; ?></td>
+                                        <td><?php echo (int) $customer['sales_count']; ?></td>
+                                        <td><?php echo (int) $customer['sales_onhold']; ?></td>
+                                        <td><?php echo (int) $customer['payments_onhold']; ?></td>
+                                        <td><?php echo $customer['status']; ?></td>
+                                        <td class="options-width">
+                                            <a href="<?php echo $this->url(array('module' => 'sales', 'id' => $customer['id'])); ?>" title="<?php echo $this->translate('Sales'); ?>" class="icon-cart"></a>
+                                            <a href="<?php echo $this->url(array('module' => 'customers', 'action' => 'edit', 'id' => $customer['id'])); ?>" title="<?php echo $this->translate('Edit'); ?>" class="icon-edit"></a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="9" class="no-results"><?php echo $this->translate('No results found'); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </form>
+                </div>
+                <?php echo $this->paginationControl($this->paginator, 'Sliding', 'paging-table.phtml'); ?>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<script>
+    function toggleCustomerSearch(){
+        $("#customer-search-tool .icon-search").toggleClass('icon-search-selected');
+        $("#customer-search-row").toggle();
+    }
+    
+    function searchCustomer(){
+        var input = $("#customer-search-row input,#customer-search-row select");
+        var formEmpty = true;
+        $.each(input,function(index,obj){
+            if($(obj).val() != ''){
+                formEmpty = false;
+            }
+        });
+        if(formEmpty == false){
+            $('#customer-search-form').submit();
+        }
+    }
+    
+    function clearCustomerSearch(){
+        window.location.href = '<?php echo $this->url(array('module' => 'customers'), NULL, TRUE); ?>';
+    }
+</script>

@@ -1,0 +1,169 @@
+<div id="page-heading">
+    <h1><?php echo $this->placeholder('heading'); ?></h1>
+</div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized">
+            <img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" />
+        </th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                        <td>
+                            <table border="0" cellpadding="0" cellspacing="0" width="50%" id="id-form" style="margin-left:10px">
+                                <tr>
+                                    <th valign="top"><?php echo $this->translate('Supplier'); ?>:</th>
+                                    <td class="form-float-left"><?php echo $this->purchase['supplier_name']; ?></td>
+                                </tr>
+                                <?php if ($this->purchase['payable_amount'] > 0) { ?>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Payable amount'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (float) $this->purchase['payable_amount']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><span style="margin-bottom:-5px;display:inline-block;" class="ui-icon ui-icon-arrowthick-1-s" title="<?php echo $this->translate('Concession'); ?>"></span></th>
+                                        <td class="form-float-left"><?php echo (float) $this->purchase['concession']; ?></td>
+                                    </tr>
+                                <?php } ?>
+                                <tr>
+                                    <th valign="top"><?php echo $this->translate('Payed amount'); ?>:</th>
+                                    <td class="form-float-left"><?php echo (float) $this->purchase['payed_amount']; ?></td>
+                                </tr>
+                                <?php if ($this->purchase['payable_amount'] > 0) { ?>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Remaining balance'); ?>:</th>
+                                        <td class="form-float-left"><?php echo ((float) $this->purchase['payable_amount']) - ((float) $this->purchase['payed_amount']) - ((float) $this->purchase['concession']); ?></td>
+                                    </tr>
+                                <?php } ?>
+                                <tr>
+                                    <th valign="top"><?php echo $this->translate('Created at'); ?>:</th>
+                                    <td class="form-float-left"><?php echo $this->purchase['created_at']; ?></td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td>
+                            <div id="related-activities">
+                                <div id="related-act-top">
+                                    <img src="/images/forms/header_related_act.gif" width="271" height="43" alt="" />
+                                </div>
+                                <div id="related-act-bottom">
+                                    <div id="related-act-inner">
+                                        <div class="left"><img src="/images/forms/icon_minus.gif" width="21" height="21" alt="" /></div>
+                                        <div class="right">
+                                            <h5>
+                                                <?php
+                                                if ($this->purchase['payable_amount'] > 0) {
+                                                    echo $this->translate('Delete purchase');
+                                                } else {
+                                                    echo $this->translate('Delete payment');
+                                                }
+                                                ?>
+                                            </h5>
+                                            <?php
+                                            if ($this->purchase['payable_amount'] > 0) {
+                                                echo $this->translate("All information related to this purchase will be removed.");
+                                            } else {
+                                                echo $this->translate("All information related to this payment will be removed.");
+                                            }
+                                            ?>
+                                            <ul class="greyarrow">
+                                                <li><a href="javascript:void(0)" onClick="deletePurchase()"><?php echo $this->translate('Click here to remove'); ?></a></li> 
+                                            </ul>
+                                        </div>
+                                        <div class="clear"></div>
+                                    </div>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </td>
+                </table>
+                <?php if (count($this->paginator)) { ?>
+                    <div id="table-content">
+
+                        <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                            <tr>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('company', $this->translate('Company')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('product_model', $this->translate('Product model')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('count', $this->translate('Count')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('unit_price', $this->translate('Unit price')); ?></th>
+                            </tr>
+
+                            <?php foreach ($this->paginator as $key => $product) { ?>
+                                <tr <?php echo ($key % 2 == 0 ? 'alternate-row' : ''); ?>>
+                                    <td><?php echo $product['company']; ?></td>
+                                    <td><?php echo $product['product_model']; ?></td>
+                                    <td><?php echo $product['count']; ?></td>
+                                    <td><?php echo $product['unit_price']; ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </div>
+                    <?php echo $this->paginationControl($this->paginator, 'Sliding', 'paging-table.phtml'); ?>
+                <?php } ?>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<div id="purchase-delete" class="dialog-box display-none">
+    <table>
+        <tr>
+            <td>
+                <?php
+                if ($this->purchase['payable_amount'] > 0) {
+                    echo $this->translate('The purchase along with the product data will be permanently removed. Do you want to delete this purchase?');
+                } else {
+                    echo $this->translate('The payment will be permanently removed. Do you want to delete this payment?');
+                }
+                ?>
+            </td>
+        </tr>
+        <tr><td>&nbsp;</td></tr>
+        <tr>
+            <td valign="middle">
+                <form id="purchase-delete-form" method="post" action="<?php echo $this->url(array('module' => 'purchases', 'action' => 'delete', 'id' => $this->purchase['id']), NULL, TRUE); ?>">
+                </form>
+            </td>
+        </tr>
+    </table>
+</div>
+<script>
+    function deletePurchase(){
+        $('#purchase-delete').dialog({
+            modal: true,
+            draggable: false,
+            resizable: false,
+            title: "<?php echo ($this->purchase['payable_amount'] > 0 ? $this->translate('Delete purchase') : $this->translate('Delete payment')); ?>",
+            buttons: [
+                {
+                    text: "<?php echo $this->translate('Ok'); ?>",
+                    click: function() {
+                        //Action
+                        $("#purchase-delete-form").submit();
+                    }
+                },
+                {
+                    text: "<?php echo $this->translate('Cancel'); ?>",
+                    click: function() {
+                        $(this).dialog("close");
+                    }
+                }
+            ]
+        });
+    }
+</script>

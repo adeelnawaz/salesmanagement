@@ -1,0 +1,331 @@
+<div id="page-heading"><h1><?php echo $this->placeholder('heading'); ?></h1></div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                        <td>
+                            <?php if (empty($this->errorMessages)) { ?>
+                                <form method="post" id="sale-form">
+                                    <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Customer'); ?>:</th>
+                                            <td class="form-float-left">
+                                                <div class="position-relative">
+                                                    <input type="text" class="inp-form" id="customer_name" value="<?php echo $this->customerName; ?>"/>
+                                                    <?php echo $this->form->customer_id; ?>
+                                                    <img id="customer_autocomplete_waiting" src="/images/loading.gif" class="position-absolute display-none" style="top:8px;left:176px;"/>
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="sale-products">
+                                            <th valign="top"><?php echo $this->translate('Products'); ?>:</th>
+                                            <td class="form-float-left">
+                                                <table id="sale_products_table">
+                                                    <?php if (!empty($this->saleProducts)) { ?>
+                                                        <?php foreach ($this->saleProducts as $saleProduct) { ?>
+                                                            <tr>
+                                                                <td>
+                                                                    <select name="sale_product_company[]" class="styledselect_form_1" onChange="showProductModels(this)">
+                                                                        <option value=""><?php echo $this->translate('Company'); ?></option>
+                                                                        <?php foreach ($this->companies as $company) { ?>
+                                                                            <option value="<?php echo $company->id; ?>" <?php echo ($saleProduct['company_id'] == $company->id ? 'selected' : ''); ?>><?php echo $company->name; ?></option>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </td>
+                                                                <td>&nbsp;</td>
+                                                                <td>
+                                                                    <select name="sale_product_model[]" class="styledselect_form_1" onChange="showProductCount(this)">
+                                                                        <option value=""><?php echo $this->translate('Model'); ?></option>
+                                                                        <?php $saleProductModel = NULL; ?>
+                                                                        <?php foreach ($this->productModels as $productModel) { ?>
+                                                                            <?php if ($productModel->company_id == $saleProduct['company_id']) { ?>
+                                                                                <?php $saleProductModel = $productModel; ?>
+                                                                                <option value="<?php echo $productModel->id; ?>" <?php echo ($saleProduct['product_model_id'] == $productModel->id ? 'selected' : ''); ?>><?php echo $productModel->model_number . ' - ' . $productModel->name; ?></option>
+                                                                            <?php } ?>
+                                                                        <?php } ?>
+                                                                    </select>
+                                                                </td>
+                                                                <td>&nbsp;</td>
+                                                                <td>
+                                                                    <input type="text" name="sale_product_count[]" class="inp-form" placeholder="<?php echo $this->translate('Count'); ?> - <?php echo $this->translate('max %d', $saleProductModel->stock); ?>" onBlur="updatePayedAmount()" value="<?php echo $saleProduct['count']; ?>" price="<?php echo $saleProduct['unit_price']; ?>" stock="<?php echo $saleProductModel->stock; ?>" />
+                                                                    <input type="hidden" name="sale_product_price[]" value="<?php echo $saleProduct['unit_price']; ?>" />
+                                                                </td>
+                                                            </tr>
+                                                        <?php } ?>
+                                                    <?php } else { ?>
+                                                        <tr>
+                                                            <td>
+                                                                <select name="sale_product_company[]" class="styledselect_form_1" onChange="showProductModels(this)">
+                                                                    <option value=""><?php echo $this->translate('Company'); ?></option>
+                                                                    <?php foreach ($this->companies as $company) { ?>
+                                                                        <option value="<?php echo $company->id; ?>"><?php echo $company->name; ?></option>
+                                                                    <?php } ?>
+                                                                </select>
+                                                            </td>
+                                                        </tr>
+                                                    <?php } ?>
+                                                </table>
+                                                <a href="javascript:void(0)" title="<?php echo $this->translate('Add'); ?>" onClick="addSaleProduct()">
+                                                    <img src="/images/forms/icon_plus.gif"/>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Payable amount'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->payable_amount; ?></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><span style="margin-bottom:-5px;display:inline-block;" class="ui-icon ui-icon-arrowthick-1-s" title="<?php echo $this->translate('Concession'); ?>"></span></th>
+                                            <td class="form-float-left"><?php echo $this->form->concession; ?></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Payed amount'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->payed_amount; ?></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('On hold'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->on_hold; ?></td>
+                                            <td></td>
+                                        </tr>
+                                        <tr>
+                                            <th>&nbsp;</th>
+                                            <td valign="top">
+                                                <input type="button" value="<?php echo $this->translate('Submit'); ?>" class="form-submit" onClick="submitSale()"/>
+                                                <input type="reset" value="<?php echo $this->translate('Back'); ?>" class="form-reset" onClick="window.back()" />
+                                            </td>
+                                            <td></td>
+                                        </tr>
+                                    </table>
+                                </form>
+                            <?php } else { ?>
+                                <div class="position-relative" style="margin:0 auto;width:300px;text-align:center">
+                                    <div class="ui-overlay"><div class="ui-widget-overlay"></div><div style="height: 100px; width: 300px;" class="ui-widget-shadow ui-corner-all"></div></div>
+                                    <div style="position: absolute; padding: 10px; top: 0px; left: 0px; margin: 10px 0px; width: 278px; height: 75px;" class="ui-widget ui-widget-content ui-corner-all">
+                                        <div class="ui-dialog-content ui-widget-content" style="background: none; border: 0;">
+                                            <?php foreach ($this->errorMessages as $errorMessage) { ?>
+                                                <h3><?php echo $errorMessage; ?></h3>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="/images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<?php if (empty($this->errorMessages)) { ?>
+    <?php
+    $companies = array();
+    $productModels = array();
+    $productModelPrices = array();
+
+    foreach ($this->companies as $company) {
+        $companies[$company->id] = $company->name;
+    }
+    foreach ($this->productModels as $productModel) {
+        $productModels[$productModel->company_id][$productModel->id] = array(
+            'name' => $productModel->model_number . ' - ' . $productModel->name,
+            'price' => $productModel->price,
+            'stock' => $productModel->stock
+        );
+    }
+    ?>
+    <script>
+        var companies = <?php echo json_encode($companies); ?>;
+        var productModels = <?php echo json_encode($productModels); ?>;
+                                                                                                                
+        var companySelect = $('<select name="sale_product_company[]" class="styledselect_form_1" onChange="showProductModels(this)"></select>');
+        companySelect.append('<option value=""><?php echo $this->translate('Company'); ?></option>');
+        $.each(companies, function(id, company){
+            companySelect.append('<option value="'+id+'">'+company+'</option>');
+        });
+                                                                                                                
+        function addSaleProduct(){
+            var removeLink = '<td class="remove_sales_product">&nbsp;<a href="javascript:void(0)" title="<?php echo $this->translate('Remove'); ?>" onClick="removeSaleProduct(this)"><img src="/images/forms/icon_minus.gif"/></a></td>';
+            if($("#sale_products_table tr:first .remove_sales_product").length == 0){
+                $("#sale_products_table tr:first").append(removeLink);
+            }
+            var product = $('<tr><td></td></tr>');
+            product.find('td').html(companySelect.clone());
+            product.append(removeLink);
+            $("#sale_products_table").append(product);
+        }
+                                                                                                                
+        function removeSaleProduct(removeBtn){
+            $(removeBtn).parent().parent().remove();
+            if($("#sale_products_table tr").length == 1){
+                $("#sale_products_table tr .remove_sales_product").remove();
+            }
+        }
+                                                                                                                
+        function showProductModels(obj){
+            var objParent = $(obj).parent();
+            objParent.nextAll().remove();
+
+            var companyId = $(obj).val();
+            if(companyId == ''){
+                return;
+            }
+            var models = productModels[companyId];
+            var modelSelect = $('<select name="sale_product_model[]" class="styledselect_form_1" onChange="showProductCount(this)"></select>');
+            modelSelect.append('<option value=""><?php echo $this->translate('Model'); ?></option>');
+            $.each(models, function(id, model){
+                modelSelect.append('<option value="'+id+'" price="'+model.price+'" stock="'+model.stock+'">'+model.name+'</option>');
+            });
+            objParent.after($('<td></td>').append(modelSelect));
+            objParent.after('<td>&nbsp;</td>');
+        }
+                                                                                                                
+        function showProductCount(obj){
+            var objParent = $(obj).parent();
+            objParent.nextAll().remove();
+
+            var modelId = $(obj).val();
+            if(modelId == ''){
+                return;
+            }
+            var modelPrice = $(obj).find('option[value='+modelId+']').attr('price');
+            var modelStock = $(obj).find('option[value='+modelId+']').attr('stock');
+            var modelSerial = $('<input type="text" name="sale_product_count[]" class="inp-form" placeholder="<?php echo $this->translate('Count'); ?> - '+"<?php echo $this->translate('max %d'); ?>".replace('%d', modelStock)+'" price="'+modelPrice+'" stock="'+modelStock+'" onBlur="updatePayedAmount()"/><input type="hidden" name="sale_product_price[]" value="'+modelPrice+'" />');
+                                                                
+            objParent.after($('<td></td>').append(modelSerial));
+            objParent.after('<td>&nbsp;</td>');
+        }
+                                                                                                                                                            
+        function submitSale(){
+            var products = $("#sale_products_table tr input,#sale_products_table tr select");
+            products.removeClass('inp-form-error');
+            var formValid = true;
+            $.each(products, function(index,product){
+                if($(product).val() == ''){
+                    $(product).addClass('inp-form-error');
+                    formValid = false;
+                }
+            });
+                    
+            $("#customer_name").removeClass('inp-form-error');
+            if($("#customer_id").val() == ''){
+                $("#customer_name").addClass('inp-form-error');
+                formValid = false;
+            }
+
+            var stock = 0,count = 0;
+            $("#sale_products_table .errors").remove();
+            var products = $("#sale_products_table tr input[name=sale_product_count\\[\\]]");
+            $.each(products, function(index,product){
+                stock = parseInt($(product).attr('stock'));
+                count = parseInt($(product).val());
+                if(stock < count){
+                    formValid = false;
+                    $(product).addClass('inp-form-error');
+                    $(product).after('<ul class="errors"><li><?php echo $this->translate('Max value:'); ?> '+stock+'</li></ul>');
+                }
+            });
+                    
+            if(formValid == true){
+                $("#sale-form").submit();
+            }
+        }
+                                                                                                                
+        $(function(){
+            /*$("#sale_products_table input[name=sale_product_count\\[\\]]").blur(function(){
+                getSerialInputData(this);
+            });*/
+                                                                                                                    
+            $("#customer_name").autocomplete({
+                source: '<?php echo $this->url(array('module' => 'customers', 'action' => 'autocomplete'), NULL, TRUE); ?>',
+                select: function(event, ui) {
+                    $("#customer_name").val(ui.item.label);
+                    $("#customer_id").val(ui.item.value);
+                    return false;
+                },
+                response: function(){
+                    $("#customer_autocomplete_waiting").hide();
+                },
+                search: function(){
+                    $("#customer_autocomplete_waiting").show();
+                }
+            });
+        });
+                                                                                                            
+        /*function getSerialInputData(obj){
+            if($(obj).val() == ''){
+                $(obj).attr('title', 0);
+                return;
+            }
+            var inpVals = $(obj).val().split(',');
+            var products = new Array();
+            $.each(inpVals, function(index, inpVal){
+                if(inpVal.indexOf("-") >= 0){
+                    inpVal = inpVal.split('-');
+                    if(inpVal[0] < inpVal[1]){
+                        for(var index = inpVal[0];index <= inpVal[1];index++){
+                            index += '';
+                            products.indexOf(index)==-1 ? products.push(index) : null;
+                        }
+                    }else{
+                        products.indexOf(inpVal[0])==-1 ? products.push(inpVal[0]) : null;
+                        products.indexOf(inpVal[1])==-1 ? products.push(inpVal[1]) : null;
+                    }
+                }else{
+                    products.indexOf(inpVal)==-1 ? products.push(inpVal) : null;
+                }
+            });
+            $(obj).attr('title', products.length);
+                                                                                                                
+            products = products.join(',');
+            $(obj).val(products);
+            updatePayedAmount();
+        }*/
+                                                                            
+        function updatePayedAmount(){
+            var products = $("#sale_products_table input[name=sale_product_count\\[\\]]");
+            var price = 0;
+            $.each(products, function(index, product){
+                price += parseFloat($(product).attr('price')) * parseInt($(product).val());
+            });
+            $("#payable_amount").val(price);
+        }
+                                                                                                            
+        /*function updatePayedAmount(){
+            var products = $("#sale_products_table input[name=sale_product_serial\\[\\]]");
+            var price = 0;
+            $.each(products, function(index, product){
+                console.log($(product).attr('price'),parseFloat($(product).attr('price')));
+                console.log($(product).attr('title'),parseInt($(product).attr('title')));
+                price += parseFloat($(product).attr('price')) * parseInt($(product).attr('title'));
+            });
+            $("#payable_amount").val(price);
+        }*/
+    </script>
+    <?php
+}

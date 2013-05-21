@@ -1,0 +1,64 @@
+<?php if ($this->pageCount) { ?>
+    <?php
+    $range = 5;
+    $rangeStart = $this->current - floor($range / 2);
+    $rangeEnd = $this->current + floor($range / 2);
+
+    if ($rangeStart < 1) {
+        $rangeStart = 1;
+    }
+    if ($rangeEnd > $this->pageCount) {
+        $rangeEnd = $this->pageCount;
+    }
+    ?>
+    <table border="0" cellpadding="0" cellspacing="0" id="paging-table">
+        <tr>
+            <td>
+                <?php if ($this->previous) { ?>
+                    <a href="<?php echo $this->url(array('page' => 1)); ?>" class="page-far-left"></a>
+                    <a href="<?php echo $this->url(array('page' => $this->previous)); ?>" class="page-left"></a>
+                <?php } else { ?>
+                    <span class="page-disabled page-far-left"></span>
+                    <span class="page-disabled page-left"></span>
+                <?php } ?>
+                <div class="page-numbers">
+                    <?php for ($page = $rangeStart; $page <= $rangeEnd; $page++) { ?>
+                        <?php if ($page == $this->current) { ?>
+                            <span class="page-number page-selected"><?php echo $page; ?></span>
+                        <?php } else { ?>
+                            <a href="<?php echo $this->url(array('page' => $page)); ?>" class="page-number"><?php echo $page; ?></a>
+                        <?php } ?>
+                    <?php } ?>    
+                </div>
+                <?php if ($this->next) { ?>
+                    <a href="<?php echo $this->url(array('page' => $this->next)); ?>" class="page-right"></a>
+                    <a href="<?php echo $this->url(array('page' => $this->pageCount)); ?>" class="page-far-right"></a>
+                <?php } else { ?>
+                    <span class="page-disabled page-right"></span>
+                    <span class="page-disabled page-far-right"></span>
+                <?php } ?>
+            </td>
+            <td width="10px"></td>
+            <td>
+                <select  class="styledselect_pages" onChange="changePageRange(this)">
+                    <option value=""><?php echo $this->translate('Number of records'); ?></option>
+                    <?php foreach (array(10, 50, 100) as $value) { ?>
+                        <option value="<?php echo $value; ?>" <?php echo ($value == $this->itemCountPerPage ? 'class="selected"' : ''); ?>><?php echo $value; ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+        </tr>
+    </table>
+    <script>
+        function changePageRange(obj){
+            var pageRange = $(obj).val();
+            if(parseInt(pageRange) > 0){
+                var url = '<?php echo $this->url(array('pagerange' => '_pageRange_')); ?>';
+                url = url.replace('_pageRange_', pageRange);
+
+                window.location.href = url;
+            }
+        }
+    </script>
+    <?php
+}

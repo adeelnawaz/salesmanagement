@@ -1,0 +1,151 @@
+<div id="page-heading">
+    <h1><?php echo $this->placeholder('heading'); ?></h1>
+</div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized">
+            <img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" />
+        </th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <?php if ($this->supplierPurchases) { ?>
+                    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                        <tr valign="top">
+                            <td>
+                                <table border="0" cellpadding="0" cellspacing="0" width="50%" id="id-form" style="margin-left:10px">
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Total purchases'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->purchasesStats['purchases_count']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Amount payable'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (float) $this->purchasesStats['payable_amount']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Amount payed'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (float) $this->purchasesStats['payed_amount']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Balance'); ?>:</th>
+                                        <td class="form-float-left"><?php echo ((float) $this->purchasesStats['payable_amount']) - ((float) $this->purchasesStats['payed_amount']); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Last purchase'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (!empty($this->purchasesStats['last_purchase']) ? $this->purchasesStats['last_purchase'] : $this->translate('None')); ?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                    </table>
+                <?php } ?>
+                <div id="table-content">
+                    <div id="purchase-search-tool" class="position-relative search-tool">
+                        <?php if ($this->searched == TRUE) { ?>
+                            <a class="icon-delete float-right" onClick="clearPurchaseSearch()"></a>
+                        <?php } ?>
+                        <a class="icon-search float-right <?php echo ($this->searched == TRUE ? 'icon-search-selected' : ''); ?>" onClick="togglePurchaseSearch()"></a>
+                        <div class="clear"></div>
+                    </div>
+                    <form method="post" id="purchase-search-form">
+                        <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                            <tr>
+                                <?php if ($this->supplierPurchases != TRUE) { ?>
+                                    <th class="table-header-repeat line-left"><?php $this->sortOrder('supplier_name', $this->translate('Supplier')); ?></th>
+                                <?php } ?>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('products_count', $this->translate('Products')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('payable_amount', $this->translate('Amount payable')); ?></th>
+                                <th class="table-header-repeat line-left" style="text-align:center"><span class="ui-icon ui-icon-arrowthick-1-s" title="<?php echo $this->translate('Concession'); ?>" style="display:inline-block"></span></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('payed_amount', $this->translate('Amount payed')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('remaining_balance', $this->translate('Remaining balance')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('created_at', $this->translate('Date of creation')); ?></th>
+                                <th class="table-header-options line-left"><a href="javascript:void(0)"><?php echo $this->translate('Options'); ?></a></th>
+                            </tr>
+                            <tr id="purchase-search-row" class="search-row <?php echo ($this->searched == TRUE ? '' : 'display-none'); ?>">
+                                <?php if ($this->supplierPurchases != TRUE) { ?>
+                                    <td><div><?php echo $this->filter->supplier_name; ?></div></td>
+                                <?php } ?>
+                                <td colspan="5"><div><?php echo $this->filter->type; ?></div></td>
+                                <td><div><?php echo $this->filter->created_at_from; ?><?php echo $this->filter->created_at_to; ?></div></td>
+                                <td class="options-width">
+                                    <a href="javascript:void(0)" title="<?php echo $this->translate('Search'); ?>" class="icon-tick" onClick="searchPurchase()"></a>
+                                </td>
+                            </tr>
+                            <?php if (count($this->paginator)) { ?>
+                                <?php foreach ($this->paginator as $key => $purchase) { ?>
+                                    <tr <?php echo ($key % 2 == 0 ? 'alternate-row' : ''); ?>>
+                                        <?php if ($this->supplierPurchases != TRUE) { ?>
+                                            <td><a href="<?php echo $this->url(array('module' => 'purchases', 'id' => $purchase['supplier_id'])); ?>"><?php echo $purchase['supplier_name']; ?></a></td>
+                                        <?php } ?>
+                                        <?php if ($purchase['payable_amount'] > 0) { ?>
+                                            <td><?php echo $purchase['products_count']; ?></td>
+                                            <td><?php echo $purchase['payable_amount']; ?></td>
+                                            <td><?php echo $purchase['concession']; ?></td>
+                                        <?php } else { ?>
+                                            <td colspan="3" align="middle">(<?php echo $this->translate('Payment'); ?>)</td>
+                                        <?php } ?>
+                                        <td><?php echo $purchase['payed_amount']; ?></td>
+                                        <?php if ($purchase['payable_amount'] > 0) { ?>
+                                            <td><?php echo $purchase['remaining_balance']; ?></td>
+                                        <?php } else { ?>
+                                            <td align="middle">(<?php echo $this->translate('Payment'); ?>)</td>
+                                        <?php } ?>
+                                        <td><?php echo $purchase['created_at']; ?></td>
+                                        <td class="options-width">
+                                            <a href="<?php echo $this->url(array('module' => 'purchases', 'action' => 'detail', 'id' => $purchase['id'])); ?>" title="<?php echo $this->translate('Detail'); ?>" class="icon-detail"></a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="<?php echo ($this->supplierPurchases == TRUE ? 8 : 9); ?>" class="no-results"><?php echo $this->translate('No results found'); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </form>
+                </div>
+                <?php echo $this->paginationControl($this->paginator, 'Sliding', 'paging-table.phtml'); ?>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<script>
+    function togglePurchaseSearch(){
+        $("#purchase-search-tool .icon-search").toggleClass('icon-search-selected');
+        $("#purchase-search-row").toggle();
+    }
+    
+    function searchPurchase(){
+        var input = $("#purchase-search-row input,#purchase-search-row select");
+        var formEmpty = true;
+        $.each(input,function(index,obj){
+            if($(obj).val() != ''){
+                formEmpty = false;
+            }
+        });
+        if(formEmpty == false){
+            $('#purchase-search-form').submit();
+        }
+    }
+    
+    function clearPurchaseSearch(){
+        window.location.href = '<?php echo $this->url(array('module' => 'purchases', 'id' => $this->supplierId), NULL, TRUE); /* ($this->supplierPurchases === TRUE ? $this->supplierId : NULL) */ ?>';
+    }
+    
+    $(function(){
+        $(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+    });
+</script>

@@ -1,0 +1,106 @@
+<div id="page-heading">
+    <h1><?php echo $this->translate('Companies'); ?></h1>
+</div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized">
+            <img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" />
+        </th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <div id="table-content">
+                    <div id="companies-search-tool" class="position-relative search-tool">
+                        <?php if ($this->searched == TRUE) { ?>
+                            <a class="icon-delete float-right" onClick="clearCompaniesSearch()"></a>
+                        <?php } ?>
+                        <a class="icon-search float-right <?php echo ($this->searched == TRUE ? 'icon-search-selected' : ''); ?>" onClick="toggleCompaniesSearch()"></a>
+                        <div class="clear"></div>
+                    </div>
+                    <form method="post" id="companies-search-form">
+                        <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                            <tr>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('name', $this->translate('Company name')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('product_models', $this->translate('Product models')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('products', $this->translate('Products in Sales')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('status', $this->translate('Status')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('created_at', $this->translate('Created at')); ?></th>
+                                <th class="table-header-options line-left"><a href="javascript:void(0)"><?php echo $this->translate('Options'); ?></a></th>
+                            </tr>
+                            <tr id="companies-search-row" class="search-row <?php echo ($this->searched == TRUE ? '' : 'display-none'); ?>">
+                                <td><div><?php echo $this->filter->name; ?></div></td>
+                                <td colspan="2"></td>
+                                <td><div><?php echo $this->filter->status; ?></div></td>
+                                <td><div><?php echo $this->filter->created_at_from; ?><?php echo $this->filter->created_at_to; ?></div></td>
+                                <td class="options-width">
+                                    <a href="javascript:void(0)" title="<?php echo $this->translate('Search'); ?>" class="icon-tick" onClick="searchCompanies()"></a>
+                                </td>
+                            </tr>
+                            <?php if (count($this->paginator)) { ?>
+                                <?php foreach ($this->paginator as $key => $company) { ?>
+                                    <tr <?php echo ($key % 2 == 0 ? 'alternate-row' : ''); ?>>
+                                        <td><?php echo $company['name']; ?></td>
+                                        <td><?php echo (int) $company['product_models']; ?></td>
+                                        <td><?php echo (int) $company['products']; ?></td>
+                                        <td><?php echo $company['status']; ?></td>
+                                        <td><?php echo $company['created_at']; ?></td>
+                                        <td class="options-width">
+                                            <a href="<?php echo $this->url(array('module' => 'productmodels', 'id' => $company['id'])); ?>" title="<?php echo $this->translate('Models'); ?>" class="icon-detail"></a>
+                                            <a href="<?php echo $this->url(array('module' => 'companies', 'action' => 'edit', 'id' => $company['id'])); ?>" title="<?php echo $this->translate('Edit'); ?>" class="icon-edit"></a>
+                                        </td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="6" class="no-results"><?php echo $this->translate('No results found'); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </form>
+                </div>
+                <?php echo $this->paginationControl($this->paginator, 'Sliding', 'paging-table.phtml'); ?>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<script>
+    function toggleCompaniesSearch(){
+        $("#companies-search-tool .icon-search").toggleClass('icon-search-selected');
+        $("#companies-search-row").toggle();
+    }
+    
+    function searchCompanies(){
+        var input = $("#companies-search-row input,#companies-search-row select");
+        var formEmpty = true;
+        $.each(input,function(index,obj){
+            if($(obj).val() != ''){
+                formEmpty = false;
+            }
+        });
+        if(formEmpty == false){
+            $('#companies-search-form').submit();
+        }
+    }
+    
+    function clearCompaniesSearch(){
+        window.location.href = '<?php echo $this->url(array('module' => 'companies'), NULL, TRUE); ?>';
+    }
+    
+    $(function(){
+        $(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+    });
+</script>

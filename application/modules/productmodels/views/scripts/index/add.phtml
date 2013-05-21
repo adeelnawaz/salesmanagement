@@ -1,0 +1,81 @@
+<div id="page-heading"><h1><?php echo $this->placeholder('heading'); ?></h1></div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                        <td>
+                            <?php if (empty($this->errorMessages)) { ?>
+                                <form method="post" id="productmodel-form">
+                                    <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Company'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->company_id; ?></td>
+                                        </tr>
+                                        <tr class="productmodel-products">
+                                            <th valign="top"><?php echo $this->translate('Model number'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->model_number; ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Model name'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->name; ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Current Price'); ?>:</th>
+                                            <td class="form-float-left"><?php echo $this->form->price; ?></td>
+                                        </tr>
+                                        <?php if ($this->action() == 'edit') { ?>
+                                            <tr>
+                                                <th valign="top"><?php echo $this->translate('Status'); ?>:</th>
+                                                <td class="form-float-left"><?php echo $this->form->status; ?></td>
+                                            </tr>
+                                        <?php } ?>
+                                        <tr>
+                                            <th>&nbsp;</th>
+                                            <td valign="top">
+                                                <input type="submit" value="<?php echo $this->translate('Submit'); ?>" class="form-submit" />
+                                                <input type="reset" value="<?php echo $this->translate('Back'); ?>" class="form-reset" onClick="window.back()" />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </form>
+                            <?php } else { ?>
+                                <div class="position-relative" style="margin:0 auto;width:300px;text-align:center">
+                                    <div class="ui-overlay"><div class="ui-widget-overlay"></div><div style="height: 100px; width: 300px;" class="ui-widget-shadow ui-corner-all"></div></div>
+                                    <div style="position: absolute; padding: 10px; top: 0px; left: 0px; margin: 10px 0px; width: 278px; height: 75px;" class="ui-widget ui-widget-content ui-corner-all">
+                                        <div class="ui-dialog-content ui-widget-content" style="background: none; border: 0;">
+                                            <?php foreach ($this->errorMessages as $errorMessage) { ?>
+                                                <h3><?php echo $errorMessage; ?></h3>
+                                            <?php } ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            <?php } ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="/images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>

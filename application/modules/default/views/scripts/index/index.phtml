@@ -1,0 +1,45 @@
+<div id="loginbox">
+    <div id="login-inner">
+        <form method="post">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th><?php echo $this->translate('Login name'); ?></th>
+                    <td><?php echo $this->form->login_name; ?></td>
+                </tr>
+                <tr>
+                    <th><?php echo $this->translate('Password'); ?></th>
+                    <td><?php echo $this->form->password; ?></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td valign="top"><input type="checkbox" class="checkbox-size" id="login-check" name="remember_me" /><label for="login-check">Remember me</label></td>
+                </tr>
+                <tr>
+                    <th></th>
+                    <td><input type="submit" class="submit-login" value="<?php echo $this->translate('Login'); ?>" /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="clear"></div>
+    <a href="" class="forgot-pwd"><?php echo $this->translate('Forgot Password?'); ?></a>
+</div>
+<div id="forgotbox">
+    <div id="forgotbox-text"><?php echo $this->translate("Please send us your email and we'll reset your password."); ?></div>
+    <div id="forgot-inner">
+        <form method="post" action="<?php echo $this->url(array('action' => 'forgotpassword'), NULL, TRUE); ?>">
+            <table border="0" cellpadding="0" cellspacing="0">
+                <tr>
+                    <th><?php echo $this->translate('Email address'); ?>:</th>
+                    <td><input type="text" value=""   class="login-inp" /></td>
+                </tr>
+                <tr>
+                    <th> </th>
+                    <td><input type="button" class="submit-login"  /></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="clear"></div>
+    <a href="" class="back-login">Back to login</a>
+</div>

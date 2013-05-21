@@ -1,0 +1,100 @@
+<div id="page-heading"><h1><?php echo $this->placeholder('heading'); ?></h1></div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" /></th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                    <tr valign="top">
+                        <td>
+                            <form method="post" id="payment-form">
+                                <table border="0" cellpadding="0" cellspacing="0"  id="id-form">
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Customer'); ?>:</th>
+                                        <td class="form-float-left">
+                                            <div class="position-relative">
+                                                <input type="text" class="inp-form" id="customer_name" value="<?php echo $this->customerName; ?>"/>
+                                                <?php echo $this->form->customer_id; ?>
+                                                <img id="customer_autocomplete_waiting" src="/images/loading.gif" class="position-absolute display-none" style="top:8px;left:176px;"/>
+                                            </div>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Payed amount'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->payed_amount; ?></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('On hold'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->form->on_hold; ?></td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <th>&nbsp;</th>
+                                        <td valign="top">
+                                            <input type="button" value="<?php echo $this->translate('Submit'); ?>" class="form-submit" onClick="submitSale()"/>
+                                            <input type="reset" value="<?php echo $this->translate('Back'); ?>" class="form-reset" onClick="window.back()" />
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                </table>
+                            </form>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><img src="/images/shared/blank.gif" width="695" height="1" alt="blank" /></td>
+                        <td></td>
+                    </tr>
+                </table>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<script>
+    function submitSale(){
+        var formValid = true;
+
+        $("#customer_name").removeClass('inp-form-error');
+        if($("#customer_id").val() == ''){
+            $("#customer_name").addClass('inp-form-error');
+            formValid = false;
+        }
+                        
+        if(formValid == true){
+            $("#payment-form").submit();
+        }
+    }
+                                                                                                                    
+    $(function(){
+        $("#customer_name").autocomplete({
+            source: '<?php echo $this->url(array('module' => 'customers', 'action' => 'autocomplete'), NULL, TRUE); ?>',
+            select: function(event, ui) {
+                $("#customer_name").val(ui.item.label);
+                $("#customer_id").val(ui.item.value);
+                return false;
+            },
+            response: function(){
+                $("#customer_autocomplete_waiting").hide();
+            },
+            search: function(){
+                $("#customer_autocomplete_waiting").show();
+            }
+        });
+    });
+</script>

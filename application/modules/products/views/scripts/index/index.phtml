@@ -1,0 +1,133 @@
+<div id="page-heading">
+    <h1><?php echo $this->placeholder('heading'); ?></h1>
+</div>
+<table border="0" width="100%" cellpadding="0" cellspacing="0" id="content-table">
+    <tr>
+        <th rowspan="3" class="sized">
+            <img src="/images/shared/side_shadowleft.jpg" width="20" height="300" alt="" />
+        </th>
+        <th class="topleft"></th>
+        <td id="tbl-border-top">&nbsp;</td>
+        <th class="topright"></th>
+        <th rowspan="3" class="sized"><img src="/images/shared/side_shadowright.jpg" width="20" height="300" alt="" /></th>
+    </tr>
+    <tr>
+        <td id="tbl-border-left"></td>
+        <td>
+            <div id="content-table-inner">
+                <div id="table-content">
+                    <div id="products-search-tool" class="position-relative search-tool">
+                        <?php if ($this->searched == TRUE) { ?>
+                            <a class="icon-delete float-right" onClick="clearProductSearch()"></a>
+                        <?php } ?>
+                        <a class="icon-search float-right <?php echo ($this->searched == TRUE ? 'icon-search-selected' : ''); ?>" onClick="toggleProductsSearch()"></a>
+                        <div class="clear"></div>
+                    </div>
+                    <form method="post" id="products-search-form">
+                        <table border="0" width="100%" cellpadding="0" cellspacing="0" id="product-table">
+                            <tr>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('company', $this->translate('Company')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('product_model', $this->translate('Product model')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('stock', $this->translate('Stock')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('purchased', $this->translate('Purchased')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('sold', $this->translate('Sold')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('avg_p_price', $this->translate('Average Purchase Price')); ?></th>
+                                <th class="table-header-repeat line-left"><?php $this->sortOrder('avg_s_price', $this->translate('Average Sale Price')); ?></th>
+                                <th class="table-header-options line-left"><a href="javascript:void(0)"><?php echo $this->translate('Options'); ?></a></th>
+                            </tr>
+                            <tr id="products-search-row" class="search-row <?php echo ($this->searched == TRUE ? '' : 'display-none'); ?>">
+                                <td><div><?php echo $this->filter->company; ?></div></td>
+                                <td><div><?php echo $this->filter->product_model; ?></div></td>
+                                <td colspan="5"></td>
+                                <td class="options-width">
+                                    <a href="javascript:void(0)" title="<?php echo $this->translate('Search'); ?>" class="icon-tick" onClick="searchProducts()"></a>
+                                </td>
+                            </tr>
+                            <?php if (count($this->paginator)) { ?>
+                                <?php foreach ($this->paginator as $key => $product) { ?>
+                                    <tr <?php echo ($key % 2 == 0 ? 'alternate-row' : ''); ?>>
+                                        <td><?php echo $product['company']; ?></td>
+                                        <td><?php echo $product['product_model']; ?></td>
+                                        <td><?php echo $product['stock']; ?></td>
+                                        <td><?php echo $product['purchased']; ?></td>
+                                        <td><?php echo $product['sold']; ?></td>
+                                        <td><?php echo ($product['purchased'] != 0 ? round($product['sum_p_price'] / $product['purchased'], 2) : ''); ?></td>
+                                        <td><?php echo ($product['sold'] != 0 ? round($product['sum_s_price'] / $product['sold'], 2) : ''); ?></td>
+                                        <td class="options-width"></td>
+                                    </tr>
+                                <?php } ?>
+                            <?php } else { ?>
+                                <tr>
+                                    <td colspan="8" class="no-results"><?php echo $this->translate('No results found'); ?></td>
+                                </tr>
+                            <?php } ?>
+                        </table>
+                    </form>
+                </div>
+                <h3 class="float-left" style="margin-left:8px"><a href="javascript:void(0)" id="bulk-delete" onClick="bulkDelete()" class="display-none"><?php echo $this->translate('Delete selected'); ?></a></h3>
+                <?php echo $this->paginationControl($this->paginator, 'Sliding', 'paging-table.phtml'); ?>
+                <div class="clear"></div>
+            </div>
+        </td>
+        <td id="tbl-border-right"></td>
+    </tr>
+    <tr>
+        <th class="sized bottomleft"></th>
+        <td id="tbl-border-bottom">&nbsp;</td>
+        <th class="sized bottomright"></th>
+    </tr>
+</table>
+<div class="clear">&nbsp;</div>
+<script>
+    function toggleProductsSearch(){
+        $("#products-search-tool .icon-search").toggleClass('icon-search-selected');
+        $("#products-search-row").toggle();
+    }
+    
+    function searchProducts(){
+        var input = $("#products-search-row input,#products-search-row select");
+        var formEmpty = true;
+        $.each(input,function(index,obj){
+            if($(obj).val() != ''){
+                formEmpty = false;
+            }
+        });
+        if(formEmpty == false){
+            $('#products-search-form').submit();
+        }
+    }
+    
+    function clearProductSearch(){
+        window.location.href = '<?php echo $this->url(array('module' => 'products', 'id' => $this->saleId), NULL, TRUE); ?>';
+    }
+    
+    $(function(){
+        $(".datepicker").datepicker({dateFormat: "yy-mm-dd"});
+    });
+    
+    function selectProduct(obj){
+        $(obj).toggleClass('icon-tick-selected');
+        if($(".bulk-delete.icon-tick-selected").length > 0){
+            $("#bulk-delete").show();
+        }else{
+            $("#bulk-delete").hide();
+        }
+    }
+    
+    function bulkDelete(){
+        var bulkDel = $(".bulk-delete.icon-tick-selected");
+        if(bulkDel.length > 0){
+            var bulkDelIds = new Array();
+            $.each(bulkDel, function(index, product){
+                bulkDelIds.push($(product).attr('productid'));
+            });
+            
+            bulkDelIds = bulkDelIds.join(',');
+            
+            var href = '<?php echo $this->url(array('module' => 'products', 'action' => 'bulkdelete', 'id' => 'productId'), NULL, TRUE); ?>';
+            href = href.replace('productId', bulkDelIds);
+            
+            window.location.href = href;
+        }
+    }
+</script>
