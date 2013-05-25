@@ -48,8 +48,9 @@ class Application_Model_DbTable_Purchases extends Zend_Db_Table_Abstract {
     }
 
     function getPurchasesStatsBySupplierId($supplierId) {
-        $select = $this->select()
-                ->from($this->_name, array('COUNT(id) AS purchases_count', 'SUM(payable_amount) AS payable_amount', 'SUM(payed_amount) AS payed_amount', 'MAX(created_at) as last_purchase'))
+        $select = $this->_db->select()
+                ->from($this->_name, array("COUNT($this->_name.id) AS purchases_count", 'SUM(payable_amount) AS payable_amount', 'SUM(payed_amount) AS payed_amount', "MAX($this->_name.created_at) as last_purchase"))
+                ->joinLeft("products", "products.sp_type = 'purchase' AND products.sp_id = $this->_name.id", 'SUM(count) as products_count')
                 ->where("supplier_id = ?", $supplierId);
         return $this->_db->fetchRow($select);
     }

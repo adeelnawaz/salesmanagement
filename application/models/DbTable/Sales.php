@@ -51,8 +51,9 @@ class Application_Model_DbTable_Sales extends Zend_Db_Table_Abstract {
     }
 
     function getSalesStatsByCustomerId($customerId) {
-        $select = $this->select()
-                ->from($this->_name, array('COUNT(id) AS sales_count', 'SUM(payable_amount) AS payable_amount', 'SUM(payed_amount) AS payed_amount', 'MAX(created_at) as last_sale'))
+        $select = $this->_db->select()
+                ->from($this->_name, array("COUNT($this->_name.id) AS sales_count", 'SUM(payable_amount) AS payable_amount', 'SUM(payed_amount) AS payed_amount', "MAX($this->_name.created_at) as last_sale"))
+                ->joinLeft("products", "products.sp_type = 'sale' AND products.sp_id = $this->_name.id", 'SUM(count) as products_count')
                 ->where("customer_id = ?", $customerId)
                 ->where("on_hold = 'no'");
         return $this->_db->fetchRow($select);

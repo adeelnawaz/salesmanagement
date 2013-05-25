@@ -76,7 +76,7 @@ class Application_Model_DbTable_Products extends Zend_Db_Table_Abstract {
         $where = $this->_db->quoteInto("sp_type = 'sale' AND sp_id = ?", $saleId);
         return $this->update($data, $where);
     }
-    
+
     function updateProductsByPurchaseIds($data, $purchaseId) {
         $where = $this->_db->quoteInto("sp_type = 'purchase' AND sp_id = ?", $purchaseId);
         return $this->update($data, $where);
@@ -106,6 +106,14 @@ class Application_Model_DbTable_Products extends Zend_Db_Table_Abstract {
         }
         if (!empty($filters['sp_type'])) {
             $select->where("$this->_name.sp_type = ?", $filters['sp_type']);
+        }
+        if (!empty($filters['customer_id'])) {
+            $select->join("sales", "$this->_name.sp_type = 'sale' AND $this->_name.sp_id = sales.id", '')
+                    ->where("sales.customer_id = ?", $filters['customer_id']);
+        }
+        if (!empty($filters['supplier_id'])) {
+            $select->join("purchases", "$this->_name.sp_type = 'purchase' AND $this->_name.sp_id = purchases.id", '')
+                    ->where("purchases.supplier_id = ?", $filters['supplier_id']);
         }
 
         return $select;

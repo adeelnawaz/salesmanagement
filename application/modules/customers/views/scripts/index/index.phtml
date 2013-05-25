@@ -64,13 +64,14 @@
                                         <td><?php echo $customer['status']; ?></td>
                                         <td class="options-width">
                                             <a href="<?php echo $this->url(array('module' => 'sales', 'id' => $customer['id'])); ?>" title="<?php echo $this->translate('Sales'); ?>" class="icon-cart"></a>
+                                            <a href="<?php echo $this->url(array('module' => 'sales', 'action' => 'detail', 'customer_id' => $customer['id'])); ?>" title="<?php echo $this->translate('Products'); ?>" class="icon-detail"></a>
                                             <a href="<?php echo $this->url(array('module' => 'customers', 'action' => 'edit', 'id' => $customer['id'])); ?>" title="<?php echo $this->translate('Edit'); ?>" class="icon-edit"></a>
                                         </td>
                                     </tr>
                                 <?php } ?>
                             <?php } else { ?>
                                 <tr>
-                                    <td colspan="9" class="no-results"><?php echo $this->translate('No results found'); ?></td>
+                                    <td colspan="11" class="no-results"><?php echo $this->translate('No results found'); ?></td>
                                 </tr>
                             <?php } ?>
                         </table>

@@ -236,6 +236,7 @@ class Sales_IndexController extends Zend_Controller_Action {
 
     public function detailAction() {
         $saleId = $this->_request->getParam('id');
+        $customerId = $this->_request->getParam('customer_id');
 
         $pageRange = $this->_request->getParam('pagerange', 10);
         $pageNo = $this->_request->getParam('page', 1);
@@ -244,18 +245,32 @@ class Sales_IndexController extends Zend_Controller_Action {
 
         $productsModel = new Application_Model_DbTable_Products();
 
-        $salesModel = new Application_Model_DbTable_Sales();
-        $sale = $salesModel->getSaleDetailsById($saleId);
+        if (!empty($customerId)) {
+            $customerModel = new Application_Model_DbTable_Customers();
+            $salesModel = new Application_Model_DbTable_Sales();
+            $customer = $customerModel->getCustomer($customerId);
+            $customerName = $customer->first_name . ' ' . $customer->last_name;
 
-        if ($sale['payable_amount'] > 0) {
-            $this->view->placeholder('heading')->set($this->view->translate("Sale details"));
+            $this->view->placeholder('heading')->set($this->view->translate("%s's products", $customerName));
+
+            $filters = array('customer_id' => $customerId, 'sp_type' => 'sale');
+            $salesStats = $salesModel->getSalesStatsByCustomerId($customerId);
+            $this->view->customerProducts = TRUE;
+            $this->view->customerId = $customerId;
+            $this->view->salesStats = $salesStats;
         } else {
-            $this->view->placeholder('heading')->set($this->view->translate("Payment details"));
-        }
+            $salesModel = new Application_Model_DbTable_Sales();
+            $sale = $salesModel->getSaleDetailsById($saleId);
 
-        $filters = array('sp_id' => $saleId, 'sp_type' => 'sale');
-        $this->view->sale = $sale;
-        $this->view->saleId = $sale['id'];
+            if ($sale['payable_amount'] > 0) {
+                $this->view->placeholder('heading')->set($this->view->translate("Sale details"));
+            } else {
+                $this->view->placeholder('heading')->set($this->view->translate("Payment details"));
+            }
+            $filters = array('sp_id' => $saleId, 'sp_type' => 'sale');
+            $this->view->sale = $sale;
+            $this->view->saleId = $sale['id'];
+        }
 
         //Paginator...
         $select = $productsModel->getSPProductPaginatedQuery($filters, $sort, $order);

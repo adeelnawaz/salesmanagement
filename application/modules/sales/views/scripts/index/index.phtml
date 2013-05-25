@@ -25,6 +25,10 @@
                                         <td class="form-float-left"><?php echo $this->salesStats['sales_count']; ?></td>
                                     </tr>
                                     <tr>
+                                        <th valign="top"><?php echo $this->translate('Total products sold'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->salesStats['products_count']; ?></td>
+                                    </tr>
+                                    <tr>
                                         <th valign="top"><?php echo $this->translate('Amount payable'); ?>:</th>
                                         <td class="form-float-left"><?php echo (float) $this->salesStats['payable_amount']; ?></td>
                                     </tr>

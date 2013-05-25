@@ -194,7 +194,7 @@ class Purchases_IndexController extends Zend_Controller_Action {
 
         $this->_redirect($this->view->url(array('module' => 'purchases'), NULL, TRUE));
     }
-    
+
     function addpaymentAction() {
         $supplierId = $this->_request->getParam('id');
 
@@ -211,7 +211,7 @@ class Purchases_IndexController extends Zend_Controller_Action {
             $data['created_at'] = $createdAt;
 
             $purchasesModel->save($data);
-            
+
             $this->_redirect($this->view->url(array('module' => 'purchases', 'id' => (!empty($supplierId) ? $supplierId : NULL)), NULL, TRUE));
         }
         if ($this->_request->isPost()) {//Form not valid
@@ -230,9 +230,10 @@ class Purchases_IndexController extends Zend_Controller_Action {
 
         $this->view->form = $form;
     }
-    
+
     public function detailAction() {
         $purchaseId = $this->_request->getParam('id');
+        $supplierId = $this->_request->getParam('supplier_id');
 
         $pageRange = $this->_request->getParam('pagerange', 10);
         $pageNo = $this->_request->getParam('page', 1);
@@ -241,18 +242,34 @@ class Purchases_IndexController extends Zend_Controller_Action {
 
         $productsModel = new Application_Model_DbTable_Products();
 
-        $purchasesModel = new Application_Model_DbTable_Purchases();
-        $purchase = $purchasesModel->getPurchaseDetailsById($purchaseId);
-        
-        if ($purchase['payable_amount'] > 0) {
-            $this->view->placeholder('heading')->set($this->view->translate("Purchase details"));
-        } else {
-            $this->view->placeholder('heading')->set($this->view->translate("Payment details"));
-        }
+        if (!empty($supplierId)) {
+            $supplierModel = new Application_Model_DbTable_Suppliers();
+            $purchasesModel = new Application_Model_DbTable_Purchases();
 
-        $filters = array('sp_id' => $purchaseId, 'sp_type' => 'purchase');
-        $this->view->purchase = $purchase;
-        $this->view->purchaseId = $purchase['id'];
+            $supplier = $supplierModel->getSupplier($supplierId);
+            $supplierName = $supplier->first_name . ' ' . $supplier->last_name;
+
+            $this->view->placeholder('heading')->set($this->view->translate("%s's products", $supplierName));
+
+            $filters = array('supplier_id' => $supplierId, 'sp_type' => 'purchase');
+            $purchasesStats = $purchasesModel->getPurchasesStatsBySupplierId($supplierId);
+            $this->view->supplierProducts = TRUE;
+            $this->view->supplierId = $supplierId;
+            $this->view->purchasesStats = $purchasesStats;
+        } else {
+            $purchasesModel = new Application_Model_DbTable_Purchases();
+            $purchase = $purchasesModel->getPurchaseDetailsById($purchaseId);
+
+            if ($purchase['payable_amount'] > 0) {
+                $this->view->placeholder('heading')->set($this->view->translate("Purchase details"));
+            } else {
+                $this->view->placeholder('heading')->set($this->view->translate("Payment details"));
+            }
+
+            $filters = array('sp_id' => $purchaseId, 'sp_type' => 'purchase');
+            $this->view->purchase = $purchase;
+            $this->view->purchaseId = $purchase['id'];
+        }
 
         //Paginator...
         $select = $productsModel->getSPProductPaginatedQuery($filters, $sort, $order);

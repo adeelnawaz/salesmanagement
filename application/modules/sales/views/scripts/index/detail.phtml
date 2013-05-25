@@ -15,92 +15,126 @@
         <td id="tbl-border-left"></td>
         <td>
             <div id="content-table-inner">
-                <table border="0" width="100%" cellpadding="0" cellspacing="0">
-                    <tr valign="top">
-                        <td>
-                            <table border="0" cellpadding="0" cellspacing="0" width="50%" id="id-form" style="margin-left:10px">
-                                <tr>
-                                    <th valign="top"><?php echo $this->translate('Customer'); ?>:</th>
-                                    <td class="form-float-left"><?php echo $this->sale['customer_name']; ?></td>
-                                </tr>
-                                <?php if ($this->sale['payable_amount'] > 0) { ?>
+                <?php if ($this->customerProducts) { ?>
+                    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                        <tr valign="top">
+                            <td>
+                                <table border="0" cellpadding="0" cellspacing="0" width="50%" id="id-form" style="margin-left:10px">
                                     <tr>
-                                        <th valign="top"><?php echo $this->translate('Payable amount'); ?>:</th>
-                                        <td class="form-float-left"><?php echo (float) $this->sale['payable_amount']; ?></td>
+                                        <th valign="top"><?php echo $this->translate('Total sales'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->salesStats['sales_count']; ?></td>
                                     </tr>
                                     <tr>
-                                        <th valign="top"><span style="margin-bottom:-5px;display:inline-block;" class="ui-icon ui-icon-arrowthick-1-s" title="<?php echo $this->translate('Concession'); ?>"></span></th>
-                                        <td class="form-float-left"><?php echo (float) $this->sale['concession']; ?></td>
+                                        <th valign="top"><?php echo $this->translate('Total products sold'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->salesStats['products_count']; ?></td>
                                     </tr>
-                                <?php } ?>
-                                <tr>
-                                    <th valign="top"><?php echo $this->translate('Payed amount'); ?>:</th>
-                                    <td class="form-float-left"><?php echo (float) $this->sale['payed_amount']; ?></td>
-                                </tr>
-                                <?php if ($this->sale['payable_amount'] > 0) { ?>
                                     <tr>
-                                        <th valign="top"><?php echo $this->translate('Remaining balance'); ?>:</th>
-                                        <td class="form-float-left"><?php echo ((float) $this->sale['payable_amount']) - ((float) $this->sale['payed_amount']) - ((float) $this->sale['concession']); ?></td>
+                                        <th valign="top"><?php echo $this->translate('Amount payable'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (float) $this->salesStats['payable_amount']; ?></td>
                                     </tr>
-                                <?php } ?>
-                                <tr>
-                                    <th valign="top"><?php echo $this->translate('Created at'); ?>:</th>
-                                    <td class="form-float-left"><?php echo $this->sale['created_at']; ?></td>
-                                </tr>
-                            </table>
-                        </td>
-                        <td>
-                            <div id="related-activities">
-                                <div id="related-act-top">
-                                    <img src="/images/forms/header_related_act.gif" width="271" height="43" alt="" />
-                                </div>
-                                <div id="related-act-bottom">
-                                    <div id="related-act-inner">
-                                        <div class="left"><img src="/images/forms/icon_edit.gif" width="21" height="21" alt="" /></div>
-                                        <div class="right">
-                                            <h5><?php echo ($this->sale['on_hold'] == 'yes' ? $this->translate('On hold') : $this->translate('Not on hold')); ?></h5>
-                                            <?php
-                                            if ($this->sale['payable_amount'] > 0) {
-                                                echo $this->translate("If the sale is on hold, then the sale's financial amounts are not added to the customer's stats.");
-                                            } else {
-                                                echo $this->translate("If the payment is on hold, then the payment's financial amounts are not added to the customer's stats.");
-                                            }
-                                            ?>
-                                            <ul class="greyarrow">
-                                                <li><a href="<?php echo $this->url(array('module' => 'sales', 'action' => 'togglehold', 'id' => $this->sale['id']), NULL, TRUE); ?>"><?php echo $this->translate('Click here to reverse'); ?></a></li> 
-                                            </ul>
-                                        </div>
-                                        <div class="clear"></div>
-                                        <div class="lines-dotted-short"></div>
-                                        <div class="left"><img src="/images/forms/icon_minus.gif" width="21" height="21" alt="" /></div>
-                                        <div class="right">
-                                            <h5>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Amount payed'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (float) $this->salesStats['payed_amount']; ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Balance'); ?>:</th>
+                                        <td class="form-float-left"><?php echo ((float) $this->salesStats['payable_amount']) - ((float) $this->salesStats['payed_amount']); ?></td>
+                                    </tr>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Last sale'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (!empty($this->salesStats['last_sale']) ? $this->salesStats['last_sale'] : $this->translate('None')); ?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                    </table>
+                <?php } else { ?>
+                    <table border="0" width="100%" cellpadding="0" cellspacing="0">
+                        <tr valign="top">
+                            <td>
+                                <table border="0" cellpadding="0" cellspacing="0" width="50%" id="id-form" style="margin-left:10px">
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Customer'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->sale['customer_name']; ?></td>
+                                    </tr>
+                                    <?php if ($this->sale['payable_amount'] > 0) { ?>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Payable amount'); ?>:</th>
+                                            <td class="form-float-left"><?php echo (float) $this->sale['payable_amount']; ?></td>
+                                        </tr>
+                                        <tr>
+                                            <th valign="top"><span style="margin-bottom:-5px;display:inline-block;" class="ui-icon ui-icon-arrowthick-1-s" title="<?php echo $this->translate('Concession'); ?>"></span></th>
+                                            <td class="form-float-left"><?php echo (float) $this->sale['concession']; ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Payed amount'); ?>:</th>
+                                        <td class="form-float-left"><?php echo (float) $this->sale['payed_amount']; ?></td>
+                                    </tr>
+                                    <?php if ($this->sale['payable_amount'] > 0) { ?>
+                                        <tr>
+                                            <th valign="top"><?php echo $this->translate('Remaining balance'); ?>:</th>
+                                            <td class="form-float-left"><?php echo ((float) $this->sale['payable_amount']) - ((float) $this->sale['payed_amount']) - ((float) $this->sale['concession']); ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                    <tr>
+                                        <th valign="top"><?php echo $this->translate('Created at'); ?>:</th>
+                                        <td class="form-float-left"><?php echo $this->sale['created_at']; ?></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            <td>
+                                <div id="related-activities">
+                                    <div id="related-act-top">
+                                        <img src="/images/forms/header_related_act.gif" width="271" height="43" alt="" />
+                                    </div>
+                                    <div id="related-act-bottom">
+                                        <div id="related-act-inner">
+                                            <div class="left"><img src="/images/forms/icon_edit.gif" width="21" height="21" alt="" /></div>
+                                            <div class="right">
+                                                <h5><?php echo ($this->sale['on_hold'] == 'yes' ? $this->translate('On hold') : $this->translate('Not on hold')); ?></h5>
                                                 <?php
                                                 if ($this->sale['payable_amount'] > 0) {
-                                                    echo $this->translate('Delete sale');
+                                                    echo $this->translate("If the sale is on hold, then the sale's financial amounts are not added to the customer's stats.");
                                                 } else {
-                                                    echo $this->translate('Delete payment');
+                                                    echo $this->translate("If the payment is on hold, then the payment's financial amounts are not added to the customer's stats.");
                                                 }
                                                 ?>
-                                            </h5>
-                                            <?php
-                                            if ($this->sale['payable_amount'] > 0) {
-                                                echo $this->translate("All information related to this sale will be removed.");
-                                            } else {
-                                                echo $this->translate("All information related to this payment will be removed.");
-                                            }
-                                            ?>
-                                            <ul class="greyarrow">
-                                                <li><a href="javascript:void(0)" onClick="deleteSale()"><?php echo $this->translate('Click here to remove'); ?></a></li> 
-                                            </ul>
+                                                <ul class="greyarrow">
+                                                    <li><a href="<?php echo $this->url(array('module' => 'sales', 'action' => 'togglehold', 'id' => $this->sale['id']), NULL, TRUE); ?>"><?php echo $this->translate('Click here to reverse'); ?></a></li> 
+                                                </ul>
+                                            </div>
+                                            <div class="clear"></div>
+                                            <div class="lines-dotted-short"></div>
+                                            <div class="left"><img src="/images/forms/icon_minus.gif" width="21" height="21" alt="" /></div>
+                                            <div class="right">
+                                                <h5>
+                                                    <?php
+                                                    if ($this->sale['payable_amount'] > 0) {
+                                                        echo $this->translate('Delete sale');
+                                                    } else {
+                                                        echo $this->translate('Delete payment');
+                                                    }
+                                                    ?>
+                                                </h5>
+                                                <?php
+                                                if ($this->sale['payable_amount'] > 0) {
+                                                    echo $this->translate("All information related to this sale will be removed.");
+                                                } else {
+                                                    echo $this->translate("All information related to this payment will be removed.");
+                                                }
+                                                ?>
+                                                <ul class="greyarrow">
+                                                    <li><a href="javascript:void(0)" onClick="deleteSale()"><?php echo $this->translate('Click here to remove'); ?></a></li> 
+                                                </ul>
+                                            </div>
+                                            <div class="clear"></div>
                                         </div>
                                         <div class="clear"></div>
                                     </div>
-                                    <div class="clear"></div>
                                 </div>
-                            </div>
-                        </td>
-                </table>
+                            </td>
+                    </table>
+                <?php } ?>
                 <?php if (count($this->paginator)) { ?>
                     <div id="table-content">
 
@@ -110,6 +144,9 @@
                                 <th class="table-header-repeat line-left"><?php $this->sortOrder('product_model', $this->translate('Product model')); ?></th>
                                 <th class="table-header-repeat line-left"><?php $this->sortOrder('count', $this->translate('Count')); ?></th>
                                 <th class="table-header-repeat line-left"><?php $this->sortOrder('unit_price', $this->translate('Unit price')); ?></th>
+                                <?php if ($this->customerProducts === TRUE) { ?>
+                                    <th class="table-header-repeat line-left"><?php $this->sortOrder('created_at', $this->translate('Date of sale')); ?></th>
+                                <?php } ?>
                             </tr>
 
                             <?php foreach ($this->paginator as $key => $product) { ?>
@@ -118,6 +155,9 @@
                                     <td><?php echo $product['product_model']; ?></td>
                                     <td><?php echo $product['count']; ?></td>
                                     <td><?php echo $product['unit_price']; ?></td>
+                                    <?php if ($this->customerProducts === TRUE) { ?>
+                                        <td><?php echo $product['created_at']; ?></td>
+                                    <?php } ?>
                                 </tr>
                             <?php } ?>
 

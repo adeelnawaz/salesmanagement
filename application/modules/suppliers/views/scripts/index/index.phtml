@@ -60,6 +60,7 @@
                                         <td><?php echo $supplier['status']; ?></td>
                                         <td class="options-width">
                                             <a href="<?php echo $this->url(array('module' => 'purchases', 'id' => $supplier['id'])); ?>" title="<?php echo $this->translate('Purchases'); ?>" class="icon-cart"></a>
+                                            <a href="<?php echo $this->url(array('module' => 'purchases', 'action' => 'detail', 'supplier_id' => $supplier['id'])); ?>" title="<?php echo $this->translate('Products'); ?>" class="icon-detail"></a>
                                             <a href="<?php echo $this->url(array('module' => 'suppliers', 'action' => 'edit', 'id' => $supplier['id'])); ?>" title="<?php echo $this->translate('Edit'); ?>" class="icon-edit"></a>
                                         </td>
                                     </tr>
